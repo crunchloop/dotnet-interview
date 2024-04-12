@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoApi.Application.Middlewares.Contracts;
 using TodoApi.Models;
 using TodoApi.Repositories;
 
@@ -8,11 +9,11 @@ namespace TodoApi.Controllers
     [Route("api/todoLists/{itemListId}/todoItems")]
     public class TodoItemController : Controller
     {
-        private readonly ITodoItemRepository _itemRepository;
+        private readonly ITodoItemMiddleware _todoItemMiddleware;
 
-        public TodoItemController(ITodoItemRepository itemRepository)
+        public TodoItemController(ITodoItemMiddleware todoItemMiddleware)
         {
-            this._itemRepository = itemRepository;
+            this._todoItemMiddleware = todoItemMiddleware;
         }
 
 
@@ -20,7 +21,7 @@ namespace TodoApi.Controllers
 
         public async Task<ActionResult<List<TodoItem>>> GetAllItemFromList(int itemListId)
         {
-            var listOfItems = await this._itemRepository.GetAllItems(itemListId);
+            var listOfItems = await this._todoItemMiddleware.GetAllItems(itemListId);
             return Json(listOfItems);
         }
 
@@ -30,7 +31,7 @@ namespace TodoApi.Controllers
         public async Task<ActionResult> CreateItem(int itemListId, TodoItem input)
         {
             input.TodoListId = itemListId;
-            await this._itemRepository.CreateItem(input);
+            await this._todoItemMiddleware.CreateItem(input);
             return Ok();
         }
     }

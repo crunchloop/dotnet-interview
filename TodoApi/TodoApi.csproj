@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repositories\**" />
+    <Content Remove="Repositories\**" />
+    <EmbeddedResource Remove="Repositories\**" />
+    <None Remove="Repositories\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Data\TodoContext.cs" />
   </ItemGroup>
 
@@ -16,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TodoApi.Application\TodoApi.Application.csproj" />
     <ProjectReference Include="..\TodoApi.Domain\TodoApi.Domain.csproj" />
     <ProjectReference Include="..\TodoApi.Infra\TodoApi.Infra.csproj" />
   </ItemGroup>
