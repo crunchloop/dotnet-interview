@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using TodoApi.Application.Middlewares.Contracts;
+using TodoApi.Application.ViewModels;
 using TodoApi.Models;
-using TodoApi.Repositories;
 
 namespace TodoApi.Controllers
 {
@@ -26,12 +27,29 @@ namespace TodoApi.Controllers
         }
 
 
-        [HttpPost()]
+        [HttpPost]
 
-        public async Task<ActionResult> CreateItem(int itemListId, TodoItem input)
+        public async Task<ActionResult> CreateItem(int itemListId, [FromBody] CreateTodoItemViewModel input)
         {
             input.TodoListId = itemListId;
-            await this._todoItemMiddleware.CreateItem(input);
+            var itemId = await this._todoItemMiddleware.CreateItem(input);
+            return Ok(itemId);
+        }
+
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> UpdateItem(int id, [FromBody] UpdateTodoItemViewModel input)
+        {
+            await this._todoItemMiddleware.UpdateItem(id, input);
+            return Ok();
+        }
+
+
+        [HttpDelete("{itemId}")]
+
+        public async Task<ActionResult> DeleteItem(int itemId)
+        {
+            await this._todoItemMiddleware.DeleteItem(itemId);
             return Ok();
         }
     }

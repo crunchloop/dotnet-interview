@@ -6,7 +6,13 @@ namespace TodoApi.Repositories
     {
         Task<List<TodoItem>> GetAllItems(int listId);
 
-        Task CreateItem(TodoItem item);
+        Task<int> CreateItem(TodoItem item);
+
+        Task UpdateItem(int id, string itemName);
+
+        Task DeleteItem(int itemId);
+
+        Task<TodoItem> GetByIdAsync(int itemId);
 
     }
 }

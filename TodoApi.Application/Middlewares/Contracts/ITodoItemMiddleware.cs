@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TodoApi.Application.ViewModels;
 using TodoApi.Models;
 
 namespace TodoApi.Application.Middlewares.Contracts
 {
     public interface ITodoItemMiddleware
     {
-        Task<List<TodoItem>> GetAllItems(int listId);
+        Task<List<TodoItemViewModel>> GetAllItems(int listId);
 
-        Task CreateItem(TodoItem item);
+        Task<int> CreateItem(CreateTodoItemViewModel item);
+
+        Task UpdateItem(int itemId, UpdateTodoItemViewModel item);
+
+        Task DeleteItem(int itemId);
     }
 }
