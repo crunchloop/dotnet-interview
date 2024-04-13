@@ -18,7 +18,7 @@ namespace TodoApi.Application.Middlewares
         {
             var items = await this._todoItemRepository.GetAllItems(listId);
 
-            if (items.Count >= 0)
+            if (items.Count <= 0)
             {
                 return new List<TodoItemViewModel>();
             }
