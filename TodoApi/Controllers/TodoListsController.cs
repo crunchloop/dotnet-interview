@@ -20,9 +20,7 @@ namespace TodoApi.Controllers
     public async Task<ActionResult<IList<TodoList>>> GetTodoLists()
     {
       if (_context.TodoList == null)
-      {
         return NotFound();
-      }
 
       return Ok(await _context.TodoList.ToListAsync());
     }
@@ -32,16 +30,12 @@ namespace TodoApi.Controllers
     public async Task<ActionResult<TodoList>> GetTodoList(long id)
     {
       if (_context.TodoList == null)
-      {
         return NotFound();
-      }
 
       var todoList = await _context.TodoList.FindAsync(id);
 
       if (todoList == null)
-      {
         return NotFound();
-      }
 
       return Ok(todoList);
     }
@@ -52,9 +46,7 @@ namespace TodoApi.Controllers
     public async Task<ActionResult> PutTodoList(long id, TodoList todoList)
     {
       if (id != todoList.Id)
-      {
         return BadRequest();
-      }
 
       _context.Entry(todoList).State = EntityState.Modified;
 
@@ -64,14 +56,10 @@ namespace TodoApi.Controllers
       }
       catch (DbUpdateConcurrencyException)
       {
-        if (!TodoListExists(id))
-        {
+        if (!TodoListExists(id)) 
           return NotFound();
-        }
         else
-        {
           throw;
-        }
       }
 
       return NoContent();
@@ -82,10 +70,8 @@ namespace TodoApi.Controllers
     [HttpPost]
     public async Task<ActionResult<TodoList>> PostTodoList(TodoList todoList)
     {
-      if (_context.TodoList == null)
-      {
+      if (_context.TodoList == null) 
         return Problem("Entity set 'TodoContext.TodoList'  is null.");
-      }
       _context.TodoList.Add(todoList);
       await _context.SaveChangesAsync();
 
@@ -97,14 +83,10 @@ namespace TodoApi.Controllers
     public async Task<ActionResult> DeleteTodoList(long id)
     {
       if (_context.TodoList == null)
-      {
         return NotFound();
-      }
       var todoList = await _context.TodoList.FindAsync(id);
       if (todoList == null)
-      {
         return NotFound();
-      }
 
       _context.TodoList.Remove(todoList);
       await _context.SaveChangesAsync();
