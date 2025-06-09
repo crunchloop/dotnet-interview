@@ -38,3 +38,73 @@ Check integration tests at: (https://github.com/crunchloop/interview-tests)
 ![crunchloop](https://crunchloop.io/logo-blue.png)
 
 We strongly believe in giving back :rocket:. Let's work together [`Get in touch`](https://crunchloop.io/contact).
+
+## Dotnet-Interview / Joel Pedrosa
+
+This fragment of the repository contains modifications to the Todo App, centered in TodoItems and MCP server support.
+
+REST API for managing task lists (TodoList) and their items (TodoItem).
+
+MCP Server exposing two endpoints:
+
+-GET /mcp/tools: discovers available tools.
+-POST /mcp/invoke: dynamically invokes tools by name and arguments.
+
+## Prerequisites
+
+-NET 8 SDK
+-Docker
+-VSCode with Remote - Containers extension
+
+## Running the application
+
+1-Start the SQL Server container:
+    a- docker-compose up -d
+
+2- Build and run the API:
+    a- cd TodoApi
+    b- dotnet build
+    c- dotnet run --urls http://localhost:5083
+
+3-Open Swagger UI in your browser to explore and test the endpoints.
+
+## REST API Endpoints
+
+TodoLists
+-GET /api/todolists
+-GET /api/todolists/{id}
+-POST /api/todolists
+-PUT /api/todolists/{id}
+-DELETE /api/todolists/{id}
+
+TodoItems
+-POST /api/todolists/{listId}/items
+-GET /api/todolists/{listId}/items/{id}
+-GET /api/todolists/{listId}/items
+-PUT /api/todolists/{listId}/items/{id}
+-PATCH /api/todolists/{listId}/items/{id}/complete
+-DELETE /api/todolists/{listId}/items/{id}
+
+## MCP Server Endpoints
+
+Discover Tools
+-GET /mcp/tools
+    Returns an array of ToolDescriptor objects:
+
+        name: internal tool name (e.g. createTodoItem).
+
+        description: human-readable description.
+
+        url, method: underlying REST endpoint.
+
+        jsonSchema: expected parameters schema.
+
+Invoke Tool
+-POST /mcp/invoke
+    {
+  "tool": "createTodoItem",
+  "args": { "listId": 1, "description": "MCP task" }
+    }
+    Returns the result (body and status code) of the internal API call.
+
+By exposing these two MCP endpoints, any MCP-compatible client (e.g. Claude Desktop or a custom script) can discover and invoke your TodoList operations using natural language prompts.

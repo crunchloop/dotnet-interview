@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using TodoApi.Dtos;
 using TodoApi.Models;
 
-namespace TodoApi.Controllers
-{
+
+namespace TodoApi.Controllers;
+
     [Route("api/todolists")]
     [ApiController]
     public class TodoListsController : ControllerBase
@@ -89,4 +90,4 @@ namespace TodoApi.Controllers
             return (_context.TodoList?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
-}
+
