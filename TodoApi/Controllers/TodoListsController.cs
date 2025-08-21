@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TodoApi.Dtos;
+using TodoApi.Dtos.Request;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
