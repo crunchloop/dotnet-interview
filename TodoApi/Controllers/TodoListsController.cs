@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TodoApi.Dtos;
 using TodoApi.Models;
+using TodoApi.Services.Interfaces;
 
 namespace TodoApi.Controllers
 {
@@ -9,84 +10,57 @@ namespace TodoApi.Controllers
     [ApiController]
     public class TodoListsController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly ITodoListService _service;
 
-        public TodoListsController(TodoContext context)
+        public TodoListsController(ITodoListService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // GET: api/todolists
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IList<TodoList>>> GetTodoLists()
-        {
-            return Ok(await _context.TodoList.ToListAsync());
-        }
+            => Ok(await _service.GetAllAsync());
 
-        // GET: api/todolists/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoList>> GetTodoList(long id)
         {
-            var todoList = await _context.TodoList.FindAsync(id);
-
-            if (todoList == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(todoList);
+            var list = await _service.GetByIdAsync(id);
+            if (list == null) return NotFound();
+            return Ok(list);
         }
 
-        // PUT: api/todolists/5
-        // To protect from over-posting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<ActionResult> PutTodoList(long id, UpdateTodoList payload)
-        {
-            var todoList = await _context.TodoList.FindAsync(id);
-
-            if (todoList == null)
-            {
-                return NotFound();
-            }
-
-            todoList.Name = payload.Name;
-            await _context.SaveChangesAsync();
-
-            return Ok(todoList);
-        }
-
-        // POST: api/todolists
-        // To protect from over-posting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<TodoList>> PostTodoList(CreateTodoList payload)
         {
-            var todoList = new TodoList { Name = payload.Name };
+            // Validar el modelo
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            _context.TodoList.Add(todoList);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTodoList", new { id = todoList.Id }, todoList);
+            var created = await _service.CreateAsync(payload);
+            return CreatedAtAction(nameof(GetTodoList), new { id = created.Id }, created);
         }
 
-        // DELETE: api/todolists/5
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<ActionResult<TodoList>> PutTodoList(long id, UpdateTodoList payload)
+        {
+            // Validar el modelo
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var updated = await _service.UpdateAsync(id, payload);
+            if (updated == null) return NotFound();
+            return Ok(updated);
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteTodoList(long id)
+        public async Task<IActionResult> DeleteTodoList(long id)
         {
-            var todoList = await _context.TodoList.FindAsync(id);
-            if (todoList == null)
-            {
-                return NotFound();
-            }
-
-            _context.TodoList.Remove(todoList);
-            await _context.SaveChangesAsync();
-
+            var success = await _service.DeleteAsync(id);
+            if (!success) return NotFound();
             return NoContent();
-        }
-
-        private bool TodoListExists(long id)
-        {
-            return (_context.TodoList?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

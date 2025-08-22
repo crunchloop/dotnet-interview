@@ -20,6 +20,31 @@ namespace TodoApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("TodoApi.Models.TodoItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("TodoListId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TodoListId");
+
+                    b.ToTable("TodoItems");
+                });
+
             modelBuilder.Entity("TodoApi.Models.TodoList", b =>
                 {
                     b.Property<long>("Id")
@@ -35,6 +60,17 @@ namespace TodoApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TodoList");
+                });
+
+            modelBuilder.Entity("TodoApi.Models.TodoItem", b =>
+                {
+                    b.HasOne("TodoApi.Models.TodoList", "TodoList")
+                        .WithMany()
+                        .HasForeignKey("TodoListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TodoList");
                 });
 #pragma warning restore 612, 618
         }
