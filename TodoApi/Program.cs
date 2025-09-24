@@ -13,6 +13,13 @@ builder.Logging.AddConsole();
 
 var app = builder.Build();
 
+// Execute migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TodoContext>();
+    db.Database.Migrate();
+}
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
