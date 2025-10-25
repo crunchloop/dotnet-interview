@@ -6,8 +6,7 @@ This is a simple Todo List API built in .NET 8. This project is currently being 
 
 ## Database
 
-The project comes with a devcontainer that provisions a SQL Server database. If you are not going to use the devcontainer, make sure to provision a SQL Server database and
-update the connection string.
+The project uses SQLite as the database, which is a lightweight, file-based database that requires no additional setup or configuration. The database file (`todos.db`) will be created automatically when you run the application for the first time.
 
 ## Build
 

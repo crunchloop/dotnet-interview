@@ -1,5 +1,8 @@
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TodoApi.Application.Interfaces;
+using TodoApi.Data;
 using TodoApi.Dtos;
 using TodoApi.Models;
 
@@ -10,10 +13,12 @@ namespace TodoApi.Controllers
     public class TodoListsController : ControllerBase
     {
         private readonly TodoContext _context;
+        private readonly ITodoListService _todoListService;
 
-        public TodoListsController(TodoContext context)
+        public TodoListsController(TodoContext context, ITodoListService todoListService)
         {
             _context = context;
+            _todoListService = todoListService;
         }
 
         // GET: api/todolists
@@ -84,9 +89,14 @@ namespace TodoApi.Controllers
             return NoContent();
         }
 
-        private bool TodoListExists(long id)
+        [ServiceFilter(typeof(TodoListExistsFilter))]
+        [HttpPost("{listId}/complete")]
+        public IActionResult CompleteList(long listId)
         {
-            return (_context.TodoList?.Any(e => e.Id == id)).GetValueOrDefault();
+
+            BackgroundJob.Enqueue(() => _todoListService.CompleteList(listId));
+
+            return Ok(new { message = "Lista completándose en background. Monitorea las notificaciones." });
         }
     }
 }

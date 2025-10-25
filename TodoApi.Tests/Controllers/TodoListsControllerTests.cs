@@ -1,7 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using TodoApi.Application.Hubs;
+using TodoApi.Application.Interfaces;
+using TodoApi.Application.Services;
 using TodoApi.Controllers;
+using TodoApi.Data;
+using TodoApi.Infrastructure.Repositories;
 using TodoApi.Models;
+using TodoApi.Repositories;
 
 namespace TodoApi.Tests;
 
@@ -28,9 +36,13 @@ public class TodoListsControllerTests
         using (var context = new TodoContext(DatabaseContextOptions()))
         {
             PopulateDatabaseContext(context);
+            var listRepository = new TodoListRepository(context);
+            var itemRepository = new TodoItemRepository(context);
+            var notificationHubMock = new Mock<IHubContext<NotificationHub, INotificationHub>>();
+            var service = new TodoListService(listRepository, itemRepository, notificationHubMock.Object);
 
-            var controller = new TodoListsController(context);
-
+            var controller = new TodoListsController(context, service);
+    
             var result = await controller.GetTodoLists();
 
             Assert.IsType<OkObjectResult>(result.Result);
@@ -44,8 +56,12 @@ public class TodoListsControllerTests
         using (var context = new TodoContext(DatabaseContextOptions()))
         {
             PopulateDatabaseContext(context);
+            var listRepository = new TodoListRepository(context);
+            var itemRepository = new TodoItemRepository(context);
+            var notificationHubMock = new Mock<IHubContext<NotificationHub, INotificationHub>>();
+            var service = new TodoListService(listRepository, itemRepository, notificationHubMock.Object);
 
-            var controller = new TodoListsController(context);
+            var controller = new TodoListsController(context, service);
 
             var result = await controller.GetTodoList(1);
 
@@ -60,8 +76,12 @@ public class TodoListsControllerTests
         using (var context = new TodoContext(DatabaseContextOptions()))
         {
             PopulateDatabaseContext(context);
+            var listRepository = new TodoListRepository(context);
+            var itemRepository = new TodoItemRepository(context);
+            var notificationHubMock = new Mock<IHubContext<NotificationHub, INotificationHub>>();
+            var service = new TodoListService(listRepository, itemRepository, notificationHubMock.Object);
 
-            var controller = new TodoListsController(context);
+            var controller = new TodoListsController(context, service);
 
             var result = await controller.PutTodoList(
                 3,
@@ -78,8 +98,12 @@ public class TodoListsControllerTests
         using (var context = new TodoContext(DatabaseContextOptions()))
         {
             PopulateDatabaseContext(context);
+            var listRepository = new TodoListRepository(context);
+            var itemRepository = new TodoItemRepository(context);
+            var notificationHubMock = new Mock<IHubContext<NotificationHub, INotificationHub>>();
+            var service = new TodoListService(listRepository, itemRepository, notificationHubMock.Object);
 
-            var controller = new TodoListsController(context);
+            var controller = new TodoListsController(context, service);
 
             var todoList = await context.TodoList.Where(x => x.Id == 2).FirstAsync();
             var result = await controller.PutTodoList(
@@ -98,7 +122,12 @@ public class TodoListsControllerTests
         {
             PopulateDatabaseContext(context);
 
-            var controller = new TodoListsController(context);
+            var listRepository = new TodoListRepository(context);
+            var itemRepository = new TodoItemRepository(context);
+            var notificationHubMock = new Mock<IHubContext<NotificationHub, INotificationHub>>();
+            var service = new TodoListService(listRepository, itemRepository, notificationHubMock.Object);
+
+            var controller = new TodoListsController(context, service);
 
             var result = await controller.PostTodoList(new Dtos.CreateTodoList { Name = "Task 3" });
 
@@ -113,8 +142,12 @@ public class TodoListsControllerTests
         using (var context = new TodoContext(DatabaseContextOptions()))
         {
             PopulateDatabaseContext(context);
+            var listRepository = new TodoListRepository(context);
+            var itemRepository = new TodoItemRepository(context);
+            var notificationHubMock = new Mock<IHubContext<NotificationHub, INotificationHub>>();
+            var service = new TodoListService(listRepository, itemRepository, notificationHubMock.Object);
 
-            var controller = new TodoListsController(context);
+            var controller = new TodoListsController(context, service);
 
             var result = await controller.DeleteTodoList(2);
 
