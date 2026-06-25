@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(timeout 20 dotnet run)",
+      "Bash(dotnet dev-certs *)",
+      "Bash(pkill -f \"dotnet.*TodoApi\")",
+      "Bash(kill 2649)",
+      "Bash(pgrep -af \"TodoApi.dll|/TodoApi$\")"
+    ]
+  }
+}
