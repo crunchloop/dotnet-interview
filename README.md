@@ -19,7 +19,7 @@ To build the application:
 
 To run the TodoApi in your local environment:
 
-`dotnet run --project TodoApi`
+`dotnet run --project Todo.Web`
 
 ## Test
 

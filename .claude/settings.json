@@ -6,7 +6,13 @@
       "Bash(dotnet dev-certs *)",
       "Bash(pkill -f \"dotnet.*TodoApi\")",
       "Bash(kill 2649)",
-      "Bash(pgrep -af \"TodoApi.dll|/TodoApi$\")"
+      "Bash(pgrep -af \"TodoApi.dll|/TodoApi$\")",
+      "Bash(dotnet sln *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet list *)",
+      "Bash(dotnet ef *)",
+      "Bash(dotnet test *)",
+      "Bash(dotnet csharpier *)"
     ]
   }
 }

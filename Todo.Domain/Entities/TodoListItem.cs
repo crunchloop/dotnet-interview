@@ -1,0 +1,10 @@
+namespace Todo.Domain.Entities;
+
+public class TodoListItem
+{
+    public long Id { get; set; }
+    public required string Name { get; set; }
+    public bool IsComplete { get; set; }
+    public long TodoListId { get; set; }
+    public TodoList? TodoList { get; set; }
+}
