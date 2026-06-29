@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Todo.Application.Common.Interfaces;
+using Todo.Infrastructure.BulkCompletion;
 using Todo.Persistence;
 
 namespace Todo.Infrastructure;
@@ -12,6 +14,8 @@ public static class DependencyInjection
     )
     {
         services.AddPersistence(configuration);
+
+        services.AddSingleton<IBulkCompletionService, BulkCompletionService>();
 
         return services;
     }

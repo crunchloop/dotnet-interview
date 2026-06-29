@@ -12,7 +12,8 @@
       "Bash(dotnet list *)",
       "Bash(dotnet ef *)",
       "Bash(dotnet test *)",
-      "Bash(dotnet csharpier *)"
+      "Bash(dotnet csharpier *)",
+      "Bash(dotnet tool *)"
     ]
   }
 }
