@@ -1,4 +1,6 @@
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Todo.Application.Common.Exceptions;
 using Todo.Application.TodoListItems.Commands.CreateTodoListItem;
 using Todo.Application.TodoListItems.Commands.DeleteTodoListItem;
@@ -10,6 +12,8 @@ namespace Todo.Application.Tests.TodoListItems;
 
 public class TodoListItemCommandHandlerTests
 {
+    private static readonly IPublisher Publisher = Mock.Of<IPublisher>();
+
     private static DbContextOptions<TodoContext> DatabaseContextOptions() =>
         new DbContextOptionsBuilder<TodoContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -69,7 +73,7 @@ public class TodoListItemCommandHandlerTests
         using var context = new TodoContext(DatabaseContextOptions());
         PopulateDatabaseContext(context);
 
-        var handler = new UpdateTodoListItemCommandHandler(context);
+        var handler = new UpdateTodoListItemCommandHandler(context, Publisher);
 
         await Assert.ThrowsAsync<NotFoundException>(
             () =>
@@ -91,7 +95,7 @@ public class TodoListItemCommandHandlerTests
         using var context = new TodoContext(DatabaseContextOptions());
         PopulateDatabaseContext(context);
 
-        var handler = new UpdateTodoListItemCommandHandler(context);
+        var handler = new UpdateTodoListItemCommandHandler(context, Publisher);
 
         await handler.Handle(
             new UpdateTodoListItemCommand
@@ -115,7 +119,7 @@ public class TodoListItemCommandHandlerTests
         using var context = new TodoContext(DatabaseContextOptions());
         PopulateDatabaseContext(context);
 
-        var handler = new DeleteTodoListItemCommandHandler(context);
+        var handler = new DeleteTodoListItemCommandHandler(context, Publisher);
 
         await handler.Handle(
             new DeleteTodoListItemCommand { Id = 1, TodoListId = 1 },

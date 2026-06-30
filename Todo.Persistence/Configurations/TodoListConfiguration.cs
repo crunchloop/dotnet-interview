@@ -9,5 +9,8 @@ public class TodoListConfiguration : IEntityTypeConfiguration<TodoList>
     public void Configure(EntityTypeBuilder<TodoList> builder)
     {
         builder.Property(list => list.Name).IsRequired();
+
+        builder.Property(list => list.ExternalId).HasMaxLength(100);
+        builder.HasIndex(list => list.ExternalId);
     }
 }

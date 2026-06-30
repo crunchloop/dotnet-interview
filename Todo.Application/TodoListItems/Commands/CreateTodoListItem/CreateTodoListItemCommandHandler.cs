@@ -40,6 +40,9 @@ public class CreateTodoListItemCommandHandler : IRequestHandler<CreateTodoListIt
         _context.TodoListItems.Add(todoListItem);
         await _context.SaveChangesAsync(cancellationToken);
 
+        // No outbound notification here: the external API has no standalone create-item
+        // endpoint. A new item on an already-synced list is reflected externally on the
+        // next sync cycle, which recreates the list to carry the new item's source_id.
         return todoListItem.Id;
     }
 }

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Todo.Application.Common.Exceptions;
 using Todo.Application.Common.Interfaces;
+using Todo.Application.Sync.Notifications;
 using Todo.Domain.Entities;
 
 namespace Todo.Application.TodoListItems.Commands.UpdateTodoListItem;
@@ -9,10 +10,12 @@ namespace Todo.Application.TodoListItems.Commands.UpdateTodoListItem;
 public class UpdateTodoListItemCommandHandler : IRequestHandler<UpdateTodoListItemCommand>
 {
     private readonly IApplicationDbContext _context;
+    private readonly IPublisher _publisher;
 
-    public UpdateTodoListItemCommandHandler(IApplicationDbContext context)
+    public UpdateTodoListItemCommandHandler(IApplicationDbContext context, IPublisher publisher)
     {
         _context = context;
+        _publisher = publisher;
     }
 
     public async Task Handle(UpdateTodoListItemCommand request, CancellationToken cancellationToken)
@@ -30,5 +33,10 @@ public class UpdateTodoListItemCommandHandler : IRequestHandler<UpdateTodoListIt
         todoListItem.Name = request.Name;
         todoListItem.IsComplete = request.IsComplete;
         await _context.SaveChangesAsync(cancellationToken);
+
+        await _publisher.Publish(
+            new TodoListItemUpdatedNotification(todoListItem.TodoListId, todoListItem.Id),
+            cancellationToken
+        );
     }
 }
