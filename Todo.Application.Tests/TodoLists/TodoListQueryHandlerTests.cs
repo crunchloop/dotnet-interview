@@ -34,6 +34,19 @@ public class TodoListQueryHandlerTests
     }
 
     [Fact]
+    public async Task GetTodoLists_WhenNoListsExist_ReturnsEmptyList()
+    {
+        using var context = new TodoContext(DatabaseContextOptions());
+
+        var handler = new GetTodoListsQueryHandler(context);
+
+        var result = await handler.Handle(new GetTodoListsQuery(), CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.Empty(result);
+    }
+
+    [Fact]
     public async Task GetTodoListById_WhenCalled_ReturnsTodoListById()
     {
         using var context = new TodoContext(DatabaseContextOptions());
